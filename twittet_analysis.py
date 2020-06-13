@@ -16,3 +16,5 @@ train  = pd.read_csv('train_Twitter Analysis.csv')
 train
 test = pd.read_csv('test_Twitter Analysis.csv')
 test
+import os
+os.listdir()
