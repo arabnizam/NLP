@@ -36,8 +36,36 @@ train.shape, test.shape
 #check the distribution
 train['label'].value_counts()
 
-train['tweet'].str.len()
+#Now we will check the distribution of length of the tweets, in terms of words
+length_train = train['tweet'].str.len() 
+length_test = test['tweet'].str.len() 
+plt.hist(length_train, bins=20, label="train_tweets") 
+plt.hist(length_test, bins=20, label="test_tweets") 
+plt.legend() 
+plt.show()
 
+#Data Cleaning
+#Combining the datasets will make it convenient for us to pre-process the data
+combi = train.append(test, ignore_index=True) 
+combi.shape
+#remove unwanted text patterns
+def remove_pattern(input_txt, pattern):
+    r = re.findall(pattern, input_txt)
+    for i in r:
+        input_txt = re.sub(i, '', input_txt)
+    return input_txt    
 
+#Removing Twitter Handles (@user)
+combi['tidy_tweet'] = np.vectorize(remove_pattern)(combi['tweet'], "@[\w]*") 
+combi.head()
 
+#Removing Punctuations, Numbers, and Special Characters
+
+combi['tidy_tweet'] = combi['tidy_tweet'].str.replace("[^a-zA-Z#]", " ") 
+combi.head()
+
+#Removing Short Words
+combi['tidy_tweet'] = combi['tidy_tweet'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>3]))
+
+combi.head()
 
