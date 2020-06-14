@@ -44,6 +44,24 @@ for row in cur.execute('SELECT Name FROM CUSTOMER;'):
 # Fetch all rows of query result which returns a list
 cur.execute('SELECT * FROM CUSTOMER;').fetchall()
 
-for row in cur.execute('SELECT * FROM CUSTOMER;'):
-    print(row)
+#for row in cur.execute('SELECT * FROM CUSTOMER;'):
+ #   print(row)
 
+import pandas as pd
+
+test_loan=pd.read_csv("C:\\Users\\arabn\\test_loan.csv")
+train_loan=pd.read_csv("C:\\Users\\arabn\\train_loan.csv",encoding='utf-8')
+
+# connect to database
+conn = sqlite3.connect('LOAN.db')
+cur = conn.cursor()
+# load dataframes into database
+train_loan.to_sql("train_loan", conn)
+test_loan.to_sql('test_loan',conn)
+
+cur.execute('select * from test_loan;').fetchall()
+
+df=pd.read_sql_query('select * from test_loan;',conn)
+df.head()
+#load table into dataframe
+df1=pd.read_sql_table("test_loan",conn)
